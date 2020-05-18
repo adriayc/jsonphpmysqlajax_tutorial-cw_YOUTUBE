@@ -29,7 +29,10 @@
     <script>
         $(function() {
             // Leer JSON
-            listar();
+            // listar();
+
+            // Enviar JSON al Servidor
+            guardar();
         });
 
         function listar() {
@@ -53,6 +56,42 @@
 
                 $('#data_productos').html(html);
             });
+        }
+
+        function guardar() {
+            // JSON.stringify: convertir un objeto JavaScript en una cadena (convertir el objeto a una cadena JSON)
+            var json = JSON.stringify(datos());
+            // console.log(datos());
+            // console.log(json);
+
+            __ajax('guardar.php', {'json': json})
+            .done(function(info) {
+                // console.log(info);
+
+                if (info) {
+                    $('#data_enviada').html(`<h3 class="text-success">Se han registrado los datos.</h3>`);
+                    
+                    // Llamar a la funcion listar
+                    listar();
+                } else {
+                    $('#data_enviada').html(`<h3 class="text-danger">Error.</h3>`);
+                }
+            });
+        }
+
+        function datos() {
+            // Declaramos un array vacio
+            var data = [];
+            // push: añade uno o mas elementos al final de un array y devuelve la nueva longitud del array
+            data.push(
+                {'producto': 'Leche', 'precio': 3.5, 'stock': 30},
+                {'producto': 'Gelatina', 'precio': 1.5, 'stock': 10}
+            );
+
+            // Agregamos el array de objeto a otro objeto
+            var productos = {'data': data};
+            
+            return productos;
         }
 
         function __ajax(url, data) {
